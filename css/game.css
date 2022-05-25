@@ -1,0 +1,27 @@
+
+
+body{
+background-color: rgb(26, 99, 60);
+
+}
+
+
+
+.difficulty{
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+.cell {width:auto; 
+    height:auto;
+    text-align: center;
+    background-color:  rgb(182, 167, 167);
+     color:white}
+.cell img {width:25px; height:auto}
+.inon{
+    width: 100%;
+    
+    height: 30px;}
+.level{
+   margin-bottom: 20px;
+}
+
