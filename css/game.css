@@ -1,27 +1,53 @@
-
-
+/* *{
+    font-size: 20px;
+    text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    } */
 body{
-background-color: rgb(26, 99, 60);
+    font-size: 25px;
+    background-color: rgb(50, 177, 177);
+    /* background-image: url("background.gif"); */
+    background-size: cover;
+  width: auto;
+  height: auto;
+  text-align: center;
+  /* margin-left: auto; */
+  /* margin-right: auto; */
 
 }
-
+/* .boom{
+    text-align: center;
+}
+.boom td:hover{
+background-color: darkgray;
+} */
 
 
 .difficulty{
     margin-top: 20px;
     margin-bottom: 25px;
+    /* text-align: center; */
+    margin-left: auto;
+    margin-right: auto;
 }
-.cell {width:auto; 
+
+.cell {
+    width:auto; 
     height:auto;
-    text-align: center;
-    background-color:  rgb(182, 167, 167);
-     color:white}
-.cell img {width:25px; height:auto}
+    /* text-align: center; */
+    background-color: rgb(182, 167, 167);
+     color:white
+    }
+.cell img {
+    width:25px; 
+    height:auto
+}
 .inon{
-    width: 100%;
-    
-    height: 30px;}
+    opacity: 30%;
+    width: 20%;
+    height: 20%;
+}
 .level{
    margin-bottom: 20px;
 }
-

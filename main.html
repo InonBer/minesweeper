@@ -2,20 +2,23 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="css/game.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/game.css">
-    <title>Minesweep</title>
+    <title>Minesweeper</title>
 </head>
 
 <body onload="initGame(6)">
-    <h1>Minesweepr</h1>
+    
+    <h1>Minesweeper</h1>
 
-    <h2>Time: <span id="time">0</span> || <span id="restart" onclick="restart()">🙂</span> || Flagged: <span
-            id="flagged">0</span> || <span class="lifes">Lifes remaining </span>:<span class="remain">❤️❤️❤️</span>
+    <h2>Time: <span id="time">0</span> | <span id="restart" onclick="restart()">🙂</span> | Flagged: <span
+            id="flagged">0</span> | <span class="lifes">Lifes remaining </span>:<span class="remain">❤️❤️❤️</span>
     </h2>
     <button class="boom" onclick="boomLevel()">7Boom Mode</button>
+    <button class="hint" onclick="safeClick()">Safe Click</button>
+    <button class="undo" onclick="undo()">Undo</button>
 
     <table class="difficulty">
         <tbody>
@@ -33,7 +36,8 @@
             <tbody class="board"></tbody>
         </table>
     </div>
-    <h5 class="inon">Inon Bereshit</h5>
+    <h6>Safe Clicks Remaining:<span class="hints">💡💡💡</span></h6>
+    <h5 class="inon">Made by: Inon Bereshit</h5>
 
     <script src="js/utils.js"></script>
     <script src="js/game.js"></script>
