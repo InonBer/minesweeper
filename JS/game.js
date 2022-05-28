@@ -7,8 +7,12 @@ const WIN = '😎';
 const LOSE = '😵';
 const LIFE = '❤️';
 const SAFECLICKS = '💡'
-
-
+const LEVELS = {
+    EASY: 6,
+    MEDIUM: 9,
+    HARD: 12,
+}
+var bestScore;
 var gMoves;
 var gTimerInterval;
 var gLifes = 3
@@ -17,7 +21,11 @@ var gCountIsCount;
 var gTime;
 var gCells;
 var gHints;
-
+var startTimer;
+var endTimer;
+var gManuelMines;
+var gHintCount;
+var gHint;
 var gGame = {
     isOn: false,
     shownCount: 0,
@@ -29,13 +37,17 @@ var gBoard;
 var gSevenBoom = false
 var gLevelNum;
 function initGame(levelNum) {
+    gHint = false
     gLevelNum = levelNum
     gCells = [];
+    gHintCount = 3
     gLifes = 3
     gFlagged = 0;
     gHints = 3
-    var elHints = document.querySelector('.hints')
-    elHints.innerText = lessHints()
+    var elSafeClicks = document.querySelector('.hints')
+    elSafeClicks.innerText = lessSafeClicks()
+    var elHints = document.querySelector('.safeClickRemain')
+    elHints.innerText = lessHintsClicks()
     var elLifes = document.querySelector('.remain')
     elLifes.innerText = setLifesLeft()
     gMoves = []
@@ -44,6 +56,7 @@ function initGame(levelNum) {
     gBoard = buildBoard(gLevel.SIZE);
     // setMinesAroundCount(gBoard);
     renderBoard(gBoard);
+    renderBestTime()
     console.log('gBoard', gBoard);
 }
 
@@ -129,16 +142,25 @@ function renderBoard(board) {
 
 function clickCell(i, j) {
     var affected = cellClicked(i, j);
+
     gMoves.push({ openCells: affected });
 }
 
 function cellClicked(rowIdx, colIdx) {
+    if (gHint) {
+        getHint(rowIdx, colIdx)
+        return
+    }
+
     if (!gGame.isOn && gGame.shownCount === 0) {
         gGame.isOn = true;
-        setMines(gLevel.MINES, gBoard, rowIdx, colIdx);
+        if (!gManuelMines) {
+            setMines(gLevel.MINES, gBoard, rowIdx, colIdx);
+        }
         setMinesAroundCount(gBoard);
 
         gTimerInterval = setInterval(timer, 10);
+        startTimer = new Date()
     } else if (gGame.shownCount > 0 && !gGame.isOn) return [];
 
     if (gBoard[rowIdx][colIdx].isShown || gBoard[rowIdx][colIdx].isMarked) {
@@ -273,21 +295,33 @@ function checkGameOver(rowIdx, colIdx) {
 
     if (gCountIsCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES) {
         gamerWin(rowIdx, colIdx);
+        endTimer = new Date()
+        var timeTook = endTimer - startTimer
+        if (gLevel.SIZE === 4) {
+            var easyBestScore = window.localStorage.getItem('Easy')
+            if (!easyBestScore) easyBestScore = Infinity
+            if (Math.floor(timeTook / 1000) < easyBestScore)
+                window.localStorage.setItem('Easy', Math.floor(timeTook / 1000))
+        } else if (gLevel.SIZE === LEVELS.MEDIUM) {
+            var mediumBestScore = window.localStorage.getItem('Medium')
+            if (!mediumBestScore) mediumBestScore = Infinity
+            if (Math.floor(timeTook / 1000) < mediumBestScore)
+                window.localStorage.setItem('Medium', Math.floor(timeTook / 1000))
+        } else if (gLevel.SIZE === LEVELS.HARD) {
+            var hardBestScore = window.localStorage.getItem('Hard')
+            if (!hardBestScore) hardBestScore = Infinity
+            if (Math.floor(timeTook / 1000) < hardBestScore)
+                window.localStorage.setItem('Hard', Math.floor(timeTook / 1000))
+        }
+        renderBestTime()
     } else if (gBoard[rowIdx][colIdx].isMine) {
         gLifes--
         var elLifes = document.querySelector('.remain')
         elLifes.innerText = setLifesLeft()
         if (!gLifes) GameOver(rowIdx, colIdx);
-        console.log(gLifes);
     }
 }
-function setLifesLeft() {
-    var strHTML = ''
-    for (var i = 0; i < gLifes; i++) {
-        strHTML += LIFE
-    }
-    return strHTML
-}
+
 function gamerWin(rowIdx, colIdx) {
     gGame.isOn = false;
     clearInterval(gTimerInterval);
@@ -360,32 +394,6 @@ function boomLevel() {
 }
 
 
-function safeClick() {
-    if (!gHints) return
-    gHints--
-    var i = getRandomInt(0, gBoard.length - 1)
-    var j = getRandomInt(0, gBoard.length - 1)
-    var hint = gBoard[i][j]
-    hint.isShown = true
-    var hintElement = getCellElement(hint)
-    renderCell({ i, j }, hintElement)
-    var elHints = document.querySelector('.hints')
-    elHints.innerText = lessHints()
-
-    setTimeout(() => {
-        hint.isShown = false
-        renderCell({ i, j }, EMPTY)
-    }, 3000)
-}
-
-function lessHints() {
-    var strHTML = ''
-    for (var i = 0; i < gHints; i++) {
-        strHTML += SAFECLICKS
-    }
-    return strHTML
-}
-
 function undo() {
     if (!gMoves.length) return;
     var lastTurn = gMoves.pop();
@@ -420,4 +428,103 @@ function undoCells(location) {
     gCountIsCount--;
 }
 
+function lessSafeClicks() {
+    var strHTML = ''
+    for (var i = 0; i < gHints; i++) {
+        strHTML += SAFECLICKS
+    }
+    return strHTML
+}
 
+function setLifesLeft() {
+    var strHTML = ''
+    for (var i = 0; i < gLifes; i++) {
+        strHTML += LIFE
+    }
+    return strHTML
+}
+
+function renderBestTime() {
+    var elEasy = document.querySelector('.storage .easy')
+    var elMedium = document.querySelector('.storage .medium')
+    var elHard = document.querySelector('.storage .hard')
+    elEasy.innerHTML = window.localStorage.getItem('Easy')
+    elMedium.innerHTML = window.localStorage.getItem('Medium')
+    elHard.innerHTML = window.localStorage.getItem('Hard')
+}
+
+function clearStorage() {
+    localStorage.clear()
+    renderBestTime()
+
+}
+
+function safeClick() {
+    if (!gHints) return
+    gHints--
+    var i = getRandomInt(0, gBoard.length - 1)
+    var j = getRandomInt(0, gBoard.length - 1)
+    var hint = gBoard[i][j]
+    hint.isShown = true
+    var hintElement = getCellElement(hint)
+    renderCell({ i, j }, hintElement)
+    var elHints = document.querySelector('.hints')
+    elHints.innerText = lessSafeClicks()
+
+    setTimeout(() => {
+        hint.isShown = false
+        renderCell({ i, j }, EMPTY)
+    }, 3000)
+}
+
+function getHint(rowIdx, colIdx) {
+    var hints = []
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i > gBoard.length - 1) continue;
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (j < 0 || j > gBoard[0].length - 1) continue;
+            // if (i === rowIdx && j === colIdx) continue;
+            var currCell = gBoard[i][j]
+            if (!currCell.isShown || !currCell.isMarked) {
+                // if (currCell.isShown || currCell.isMarked) continue
+                // console.log(currCell);
+                hints.push({ i, j })
+                currCell.isShown = true
+                renderCell({ i, j }, getCellElement(currCell))
+
+            }
+        }
+    }
+    console.log(hints);
+    setTimeout(() => {
+        for (var i = 0; i < hints.length; i++) {
+            var removeHint = gBoard[hints[i].i][hints[i].j]
+            removeHint.isShown = false
+            renderCell(hints[i], EMPTY)
+        }
+        hints = []
+    }, 3000);
+    gHintCount--
+    HintActive()
+    var elHints = document.querySelector('.safeClickRemain')
+    elHints.innerText = lessHintsClicks()
+    return hints
+}
+function HintActive() {
+    gHint = !gHint
+    console.log(gHint);
+    var elHint = document.querySelector('.safeClick')
+    if (gHint) {
+        elHint.style.backgroundColor = "green"
+    } else {
+        elHint.style.backgroundColor = "white"
+    }
+
+}
+function lessHintsClicks() {
+    var strHTML = ''
+    for (var i = 0; i < gHintCount; i++) {
+        strHTML += SAFECLICKS
+    }
+    return strHTML
+}

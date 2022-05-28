@@ -19,13 +19,14 @@
     <button class="boom" onclick="boomLevel()">7Boom Mode</button>
     <button class="hint" onclick="safeClick()">Safe Click</button>
     <button class="undo" onclick="undo()">Undo</button>
+    <button class="safeClick" onclick="HintActive()">Hint</button>
 
     <table class="difficulty">
         <tbody>
             <tr>
-                <td><input onclick="restart(6)" type="radio" name="level" checked>Easy</td>
-                <td><input onclick="restart(9)" type="radio" name="level">Medium</td>
-                <td><input onclick="restart(12)" type="radio" name="level">Hard</td>
+                <td><input onclick="restart(LEVELS.EASY)" type="radio" name="level" checked>Easy</td>
+                <td><input onclick="restart(LEVELS.MEDIUM)" type="radio" name="level">Medium</td>
+                <td><input onclick="restart(LEVELS.HARD)" type="radio" name="level">Hard</td>
 
             </tr>
         </tbody>
@@ -37,10 +38,51 @@
         </table>
     </div>
     <h6>Safe Clicks Remaining:<span class="hints">💡💡💡</span></h6>
-    <h5 class="inon">Made by: Inon Bereshit</h5>
+    <h6>Hints Remaining:<span class="safeClickRemain">💡💡💡</span></h6>
+
+
+
+
+
+    <div>
+        <table border="1">
+            <thead>
+                <tr>
+                    
+                    <td class="clearStorage" colspan="2" onclick="clearStorage()">clearStorage</td colspan="2">
+                    
+                </tr>
+            <tr>
+                <td> Mode </td>
+                <td> Time</td>
+            </tr>
+        </thead>
+        <tbody class="storage" >
+            <tr>
+                    <td>Easy:</td> <td class="easy">X</td>
+                </tr>
+                <tr>
+                    <td>Medium</td> <td class="medium">X</td>
+                </tr>
+                <tr>
+                    <td>Hard</td> <td class="hard">X</td>
+                </tr>
+            </tbody>
+    </table>
+    </div>
+
+
+
+
+
+
+
+
+
 
     <script src="js/utils.js"></script>
     <script src="js/game.js"></script>
+    <h5 class="inon">Made by: Inon Bereshit</h5>
 
 </body>
 

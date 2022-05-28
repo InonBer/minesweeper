@@ -7,13 +7,11 @@
 body{
     font-size: 25px;
     background-color: rgb(50, 177, 177);
-    /* background-image: url("background.gif"); */
+    /* background-image: url("/img/minesweeperworld.png"); */
     background-size: cover;
   width: auto;
   height: auto;
   text-align: center;
-  /* margin-left: auto; */
-  /* margin-right: auto; */
 
 }
 /* .boom{
@@ -50,4 +48,13 @@ background-color: darkgray;
 }
 .level{
    margin-bottom: 20px;
+}
+
+.clearStorage{
+    background-color: rgb(74, 153, 98);
+}
+.clearStorage:hover{
+cursor: pointer;
+background-color: rgb(57, 128, 78);;
+
 }
